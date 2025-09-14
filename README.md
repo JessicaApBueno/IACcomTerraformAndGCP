@@ -41,13 +41,13 @@ O Ansible executa um playbook para instalar e configurar o Nginx, clonar um repo
 O usuário final acessa o site através do IP público da VM.
 
 # 🚀 Funcionalidades
-Infraestrutura como Código: Toda a infraestrutura do GCP é definida em código Terraform, permitindo que seja criada, alterada e destruída de forma consistente e reproduzível.
+☁ Infraestrutura como Código: Toda a infraestrutura do GCP é definida em código Terraform, permitindo que seja criada, alterada e destruída de forma consistente e reproduzível.
 
-Gerenciamento de Configuração: O Ansible é usado para automatizar a configuração do servidor, garantindo que o ambiente seja configurado corretamente, sem intervenção manual.
+☁ Gerenciamento de Configuração: O Ansible é usado para automatizar a configuração do servidor, garantindo que o ambiente seja configurado corretamente, sem intervenção manual.
 
-Implantação Automatizada: O playbook do Ansible clona o código-fonte de um site diretamente de um repositório Git, automatizando o processo de deploy.
+☁ Implantação Automatizada: O playbook do Ansible clona o código-fonte de um site diretamente de um repositório Git, automatizando o processo de deploy.
 
-Segurança: Utiliza um par de chaves SSH para acesso seguro à VM e regras de firewall que limitam o acesso SSH a um IP específico.
+☁ Segurança: Utiliza um par de chaves SSH para acesso seguro à VM e regras de firewall que limitam o acesso SSH a um IP específico.
 
 # 🔧 Pré-requisitos
 Antes de começarmos, você precisará ter algumas ferramentas instaladas e contas configuradas.
@@ -87,3 +87,34 @@ O Terraform precisará de permissão para criar recursos. Habilite a API do Comp
 gcloud services enable compute.googleapis.com
 
 ```
+# ⚙️ Configuração
+Clone este repositório:
+
+```Bash
+
+git clone https://github.com/JessicaApBueno/IACcomTerraformAndGCP.git
+cd IACcomTerraformAndGCP
+
+```
+
+# 🚀 Passo a Passo da Execução
+Inicialize o Terraform:
+Este comando prepara seu diretório de trabalho, baixando os provedores necessários.
+
+```Bash
+
+terraform init
+```
+
+Planeje e Aplique a Infraestrutura:
+Execute apply para que o Terraform crie os recursos no GCP. Revise o plano e digite yes quando solicitado.
+
+```Bash
+
+terraform apply
+```
+Ao final, o Terraform exibirá o IP público da instância.
+
+Configure o Inventário do Ansible:
+O arquivo de inventário (inventory) informa ao Ansible onde e como se conectar. Adicione a seguinte linha a ele, substituindo <IP_PUBLICO_DA_VM> pelo IP gerado no passo anterior.
+
