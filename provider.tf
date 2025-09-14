@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "google" {
-  project = "storied-radius-470316-f6" # <-- SUBSTITUA PELO ID DO SEU PROJETO
+  project = "MeuProjetoID" # <-- SUBSTITUA PELO ID DO SEU PROJETO
   region  = "us-central1"
   zone    = "us-central1-a"
 }
