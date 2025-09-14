@@ -118,3 +118,119 @@ Ao final, o Terraform exibirá o IP público da instância.
 Configure o Inventário do Ansible:
 O arquivo de inventário (inventory) informa ao Ansible onde e como se conectar. Adicione a seguinte linha a ele, substituindo <IP_PUBLICO_DA_VM> pelo IP gerado no passo anterior.
 
+```Bash
+# Exemplo: 34.55.253.163 ansible_user=devops ...
+<IP_PUBLICO_DA_VM> ansible_user=devops ansible_ssh_private_key_file=gcp-instance-key.pem
+```
+Crie o  Playbook do Ansible:
+
+```Bash
+nano playbook.yml
+```
+Cole o código:
+```Bash
+---
+- name: Configure Web Server Locally
+  hosts: all
+  become: yes
+  tasks:
+  
+    - name: Stop and disable apt-daily services
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop:
+        - apt-daily.service
+        - apt-daily-upgrade.service
+        - apt-daily.timer
+      ignore_errors: yes # Ignora o erro se algum serviço não existir
+
+    - name: Ensure apt cache is updated
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Ensure all packages are up to date
+      apt:
+        upgrade: dist
+
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Ensure Nginx service is started and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Remove default Nginx page (if it exists)
+      file:
+        path: /var/www/html/index.nginx-debian.html
+        state: absent
+
+    - name: Clone BoasVindasGCP repository
+      git:
+        repo: 'https://github.com/JessicaApBueno/BoasVindasGCP.git'
+        dest: '/tmp/website'
+        clone: yes
+        force: yes
+
+    - name: Deploy website files to Nginx document root
+      copy:
+        src: "/tmp/website/"
+        dest: "/var/www/html/"
+        remote_src: yes
+        owner: root
+        group: www-data
+        mode: '0755'
+      notify:
+      - restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+```
+Pressione  Ctrl  + x + y + Enter
+
+Execute o comando:
+
+```bash
+ansible-playbook -i inventory playbook.yml
+```
+
+Acesse seu Site!
+Após a conclusão do playbook, seu site estará no ar. Acesse-o usando http:// no navegador.
+http://<IP_PUBLICO_DA_VM>
+
+# 📁 Estrutura do Projeto
+
+```bash
+.
+├── compute.tf                 # Define a VM do Google Compute Engine.
+├── firewall.tf                # Define as regras de firewall (liberar portas 80 e 22).
+├── gcp-instance-key.pem       # (Gerado pelo Terraform) Chave SSH privada para acessar a VM.
+├── inventory                  # Arquivo de inventário do Ansible.
+├── outputs.tf                 # Define os dados de saída do Terraform (ex: IP público).
+├── playbook.yml               # Playbook do Ansible para configurar o servidor.
+├── provider.tf                # Define o provedor (Google Cloud) e suas configurações.
+├── ssh_key.tf                 # Gera o par de chaves SSH e salva a chave privada.
+├── terraform.tfvars.example   # Arquivo de exemplo para as variáveis do projeto.
+├── variables.tf               # Declara as variáveis usadas pelo Terraform.
+└── .gitignore                 # Especifica arquivos a serem ignorados pelo Git (ex: *.pem).
+```
+# 🧹 Limpeza
+
+```bash
+
+terraform destroy
+```
