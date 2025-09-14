@@ -101,6 +101,10 @@ terraform init
 ```
 
 Planeje e Aplique a Infraestrutura:
+```bash
+terraform plan
+```
+
 Execute apply para que o Terraform crie os recursos no GCP. Revise o plano e digite yes quando solicitado.
 
 ```Bash
@@ -228,4 +232,5 @@ http://<IP_PUBLICO_DA_VM>
 
 terraform destroy
 ```
+
 
