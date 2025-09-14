@@ -30,15 +30,9 @@ Captura do Terraform Destruindo
 # Visão Geral da Arquitetura
 O fluxo de trabalho é o seguinte:
 
-O desenvolvedor executa os comandos do Terraform em sua máquina local.
+![fluxo](https://github.com/user-attachments/assets/abec32f2-a8d1-4fec-a3c3-fd600a31f283)
 
-O Terraform se comunica com as APIs do Google Cloud para criar a infraestrutura definida nos arquivos .tf (VM, regras de firewall, etc.).
 
-Após a criação da infraestrutura, o Ansible se conecta à nova VM via SSH.
-
-O Ansible executa um playbook para instalar e configurar o Nginx, clonar um repositório Git com o site e publicar os arquivos.
-
-O usuário final acessa o site através do IP público da VM.
 
 # 🚀 Funcionalidades
 ☁ Infraestrutura como Código: Toda a infraestrutura do GCP é definida em código Terraform, permitindo que seja criada, alterada e destruída de forma consistente e reproduzível.
@@ -234,3 +228,4 @@ http://<IP_PUBLICO_DA_VM>
 
 terraform destroy
 ```
+
